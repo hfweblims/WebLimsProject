@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component conRouterType="手动" createIndustry="0"
+	createTime="2018-11-24 12:18:35" creator="" description=""
+	displayName="TAnalysisMethod(自定义档案)业务操作" fromSourceBmf="true"
+	gencodestyle="NC传统样式" help="" id="028d2427-efa0-11e8-b4a6-4dd577e382d8"
+	industry="0" industryChanged="false" industryIncrease="false"
+	industryName="基础行业" isSource="false" isbizmodel="true" mainEntity=""
+	modifier="" modifyIndustry="0" modifyTime="2018-11-24 12:18:35"
+	name="bo_Defdoc-C0J00125" namespace="uap" ownModule="uapbd"
+	preLoad="false" programcode="" resModuleName="bo_Defdoc-C0J00125"
+	resid="" version="1" versionType="0">
+	<celllist>
+		<busioperation componentID="028d2427-efa0-11e8-b4a6-4dd577e382d8"
+			createIndustry="0" createTime="2018-11-24 12:18:35" creator=""
+			dataType="1001AA10000000002ICU" dbtype="" description=""
+			displayName="修改" fullClassName="nc.vouap.bo_Defdoc-C0J00125.edit"
+			height="100" help="" id="028d242b-efa0-11e8-b4a6-4dd577e382d8"
+			industryChanged="false" isAuthorization="true" isBusiActivity="false"
+			isSource="false" logtype="MODIFY" modifier="" modifyIndustry="0"
+			modifyTime="2018-11-24 12:18:35" name="edit" needlog="true"
+			resid="2UC000-001103" typeDisplayName="TAnalysisMethod(自定义档案)"
+			typeName="Defdoc-C0J00125" version=""
+			versionType="0" visibility="public" width="80" x="150" y="120">
+			<refoperationlist />
+		</busioperation>
+		<busioperation componentID="028d2427-efa0-11e8-b4a6-4dd577e382d8"
+			createIndustry="0" createTime="2018-11-24 12:18:35" creator=""
+			dataType="1001AA10000000002ICU" dbtype="" description=""
+			displayName="删除" fullClassName="nc.vouap.bo_Defdoc-C0J00125.delete"
+			height="100" help="" id="028d2429-efa0-11e8-b4a6-4dd577e382d8"
+			industryChanged="false" isAuthorization="true" isBusiActivity="false"
+			isSource="false" logtype="DELETE" modifier="" modifyIndustry="0"
+			modifyTime="2018-11-24 12:18:35" name="delete" needlog="true"
+			resid="2UC000-001104" typeDisplayName="TAnalysisMethod(自定义档案)"
+			typeName="Defdoc-C0J00125" version=""
+			versionType="0" visibility="public" width="80" x="250" y="120">
+			<refoperationlist />
+		</busioperation>
+		<busioperation componentID="028d2427-efa0-11e8-b4a6-4dd577e382d8"
+			createIndustry="0" createTime="2018-11-24 12:18:35" creator=""
+			dataType="1001AA10000000002ICU" dbtype="" description=""
+			displayName="启用" fullClassName="nc.vouap.bo_Defdoc-C0J00125.enable"
+			height="100" help="" id="028d242c-efa0-11e8-b4a6-4dd577e382d8"
+			industryChanged="false" isAuthorization="true" isBusiActivity="false"
+			isSource="false" logtype="MODIFY" modifier="" modifyIndustry="0"
+			modifyTime="2018-11-24 12:18:35" name="enable" needlog="true"
+			resid="2UC000-001105" typeDisplayName="TAnalysisMethod(自定义档案)"
+			typeName="Defdoc-C0J00125" version=""
+			versionType="0" visibility="public" width="80" x="350" y="120">
+			<refoperationlist />
+		</busioperation>
+		<busioperation componentID="028d2427-efa0-11e8-b4a6-4dd577e382d8"
+			createIndustry="0" createTime="2018-11-24 12:18:35" creator=""
+			dataType="1001AA10000000002ICU" dbtype="" description=""
+			displayName="停用" fullClassName="nc.vouap.bo_Defdoc-C0J00125.disable"
+			height="100" help="" id="028d242a-efa0-11e8-b4a6-4dd577e382d8"
+			industryChanged="false" isAuthorization="true" isBusiActivity="false"
+			isSource="false" logtype="MODIFY" modifier="" modifyIndustry="0"
+			modifyTime="2018-11-24 12:18:35" name="disable" needlog="true"
+			resid="2UC000-001106" typeDisplayName="TAnalysisMethod(自定义档案)"
+			typeName="Defdoc-C0J00125" version=""
+			versionType="0" visibility="public" width="80" x="450" y="120">
+			<refoperationlist />
+		</busioperation>
+		<busioperation componentID="028d2427-efa0-11e8-b4a6-4dd577e382d8"
+			createIndustry="0" createTime="2018-11-24 12:18:35" creator=""
+			dataType="1001AA10000000002ICU" dbtype="" description=""
+			displayName="新增" fullClassName="nc.vouap.bo_Defdoc-C0J00125.add"
+			height="100" help="" id="028d2428-efa0-11e8-b4a6-4dd577e382d8"
+			industryChanged="false" isAuthorization="true" isBusiActivity="false"
+			isSource="false" logtype="ADD" modifier="" modifyIndustry="0"
+			modifyTime="2018-11-24 12:18:35" name="add" needlog="true"
+			resid="2UC000-001114" typeDisplayName="TAnalysisMethod(自定义档案)"
+			typeName="Defdoc-C0J00125" version=""
+			versionType="0" visibility="public" width="80" x="50" y="120">
+			<refoperationlist />
+		</busioperation>
+	</celllist>
+	<connectlist />
+	<refdepends />
+	<refdependLoseIDs />
+	<cellRemoveLog />
+	<rulers>
+		<ruler isHorizontal="true" unit="0">
+			<guideList />
+		</ruler>
+		<ruler isHorizontal="false" unit="0">
+			<guideList />
+		</ruler>
+	</rulers>
+</component>

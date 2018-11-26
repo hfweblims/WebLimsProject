@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding='gb2312'?>
+<module name="qcco">
+  <public>
+	<component remote="true" singleton="true"  tx="CMT">
+	  <interface>nc.itf.qcco.IQccommissiontypeMaintain</interface>
+	  <implementation>nc.impl.qcco.QccommissiontypeMaintainImpl</implementation>
+	</component>
+
+  </public> 
+</module> 
