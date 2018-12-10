@@ -564,7 +564,7 @@
 	<!-- É¾³ý°´Å¥ -->
 	<bean id="deleteAction" class="nc.ui.qcco.commission.action.CommissionDeleteAction">
 		<property name="model"><ref bean="bmModel"/></property>
-		<property name="billType" value="C0J0" />
+		<property name="billType" value="QC07" />
 		<property name="filledUpInFlow" value="true" />
 		<property name="actionName" value="DELETE" />
 		<property name="mainGrandModel" ref="mainGrandModel" />
@@ -755,7 +755,7 @@
 	<bean id="billCodeMediator" class="nc.ui.pubapp.bill.BillCodeMediator" init-method="initUI">
 		<property name="billForm" ref="billForm"></property>
 		<property name="billCodeKey" value="billno"></property>
-		<property name="billType" value="C0J0"></property>
+		<property name="billType" value="QC07"></property>
 	</bean>
 
 
@@ -788,7 +788,7 @@
 	<!--  ======= ¶¯×÷£º[newActions] [É¾³ý] ===========
 	<bean id="deleteScriptAction" class="nc.ui.pubapp.uif2app.actions.pflow.DeleteScriptAction">
 		<property name="model"><ref bean="bmModel"/></property>
-		<property name="billType" value="C0J0" />
+		<property name="billType" value="QC07" />
 		<property name="filledUpInFlow" value="true" />
 		<property name="actionName" value="DELETE" />
 		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
@@ -825,7 +825,7 @@
 	<bean id="commitScriptAction" class="nc.ui.pubapp.uif2app.actions.pflow.CommitScriptAction">
 		<property name="model"><ref bean="bmModel"/></property>
 		<property name="editor"><ref bean="billForm"/></property>
-		<property name="billType" value="C0J0" />
+		<property name="billType" value="QC07" />
 		<property name="filledUpInFlow" value="true" />
 		<property name="actionName" value="SAVE" />
 		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
@@ -835,7 +835,7 @@
 	<bean id="unCommitScriptAction" class="nc.ui.pubapp.uif2app.actions.pflow.UnCommitScriptAction">
 		<property name="model"><ref bean="bmModel"/></property>
 		<property name="editor"><ref bean="billForm"/></property>
-		<property name="billType" value="C0J0" />
+		<property name="billType" value="QC07" />
 		<property name="filledUpInFlow" value="true" />
 		<property name="actionName" value="UNSAVEBILL" />
 		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
@@ -845,7 +845,7 @@
 	<bean id="approveScriptAction" class="nc.ui.pubapp.uif2app.actions.pflow.ApproveScriptAction">
 		<property name="model"><ref bean="bmModel"/></property>
 		<property name="editor"><ref bean="billForm"/></property>
-		<property name="billType" value="C0J0" />
+		<property name="billType" value="QC07" />
 		<property name="filledUpInFlow" value="true" />
 		<property name="actionName" value="APPROVE" />
 		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
@@ -855,7 +855,7 @@
 	<bean id="uNApproveScriptAction" class="nc.ui.pubapp.uif2app.actions.pflow.UNApproveScriptAction">
 		<property name="model"><ref bean="bmModel"/></property>
 		<property name="editor"><ref bean="billForm"/></property>
-		<property name="billType" value="C0J0" />
+		<property name="billType" value="QC07" />
 		<property name="filledUpInFlow" value="true" />
 		<property name="actionName" value="UNAPPROVE" />
 		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
@@ -905,7 +905,7 @@
 	<bean id="saveScriptAction" class="nc.ui.pubapp.uif2app.actions.pflow.SaveScriptAction">
 		<property name="model"><ref bean="bmModel"/></property>
 		<property name="editor"><ref bean="billForm"/></property>
-		<property name="billType" value="C0J0" />
+		<property name="billType" value="QC07" />
 		<property name="filledUpInFlow" value="true" />
 		<property name="actionName" value="SAVEBASE" />
 		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>

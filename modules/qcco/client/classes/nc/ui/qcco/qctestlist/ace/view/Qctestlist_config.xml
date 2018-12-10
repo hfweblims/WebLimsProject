@@ -1,0 +1,948 @@
+<?xml version="1.0" encoding="GBK"?>
+
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- 环境变量 -->
+	<bean id="context" class="nc.vo.uif2.LoginContext"></bean>
+
+	<!-- 模型部分配置*********************************************************** -->
+ 	<!-- 单据删除代理，支持批操作 -->
+	<bean id="deleteProxy" class="nc.ui.qcco.qctestlist.ace.serviceproxy.AceQctestlistDeleteProxy" />
+	<!-- 应用服务类，负责进行模型操作的处理 -->
+	<bean id="bmModelModelService" class="nc.ui.qcco.qctestlist.ace.serviceproxy.AceQctestlistMaintainProxy">
+		<property name="grandTabAndVOMap">
+				<map><entry key="pk_testlistentry">
+								<ref bean="TestlistentryEVO"></ref>
+				</entry></map>
+		</property>
+	</bean>
+	
+	
+	<!-- 对象转换器工厂，由此获取操作对象的特征信息 -->
+	<bean id="BOAdapterFactory" class="nc.ui.pubapp.uif2app.view.value.AggVOMetaBDObjectAdapterFactory">
+		
+	</bean>
+	<bean id="BOAdapterFactory2" class="nc.vo.bd.meta.BDObjectAdpaterFactory" />
+   
+	<!-- 层次结构构造策略 -->
+
+	<!-- 模型元素 -->
+	<!--========= 模型元素：[PUBAPP平面模型(BillManageModel)实例对象] ==========-->
+	<bean id="bmModel" class="nc.ui.pubapp.uif2app.model.BillManageModel">
+		<property name="context"><ref bean="context"/></property>
+		<property name="businessObjectAdapterFactory"><ref bean="BOAdapterFactory"/></property>
+	</bean>
+	<!-- 管理应用模型 -->
+	<bean id="bmModel2" class="nc.ui.pubapp.uif2app.model.BillManageModel">
+		<property name="businessObjectAdapterFactory" ref="BOAdapterFactory2"></property>
+		<property name="context" ref="context"></property>
+	</bean>
+	<!-- 主子孙管理模型 -->
+	<bean id="mainGrandModel" class="nc.ui.pubapp.uif2app.components.grand.model.MainGrandModel">
+		<!-- 设置变量控制列表卡片是否显示（统一控制） -->
+		<property name="handleListCardIsShow" value="true"></property>
+		<!-- 主子的MODEL -->
+		<property name="mainModel" ref="bmModel"></property>
+		<!-- 孙MODEL -->
+		<property name="grandModel" ref="bmModel2"></property>
+	</bean>	
+	<bean id="mainGrandBlankFilter" class="nc.ui.pubapp.uif2app.components.grand.MainGrandBlankFilter"> 
+	<!--过滤的MAP -->
+	<property name="childFilterMap">
+		 <map>
+ 			<entry>
+ 			<key>
+ 		<!--页签code -->
+ 		<value>pk_testlistcomp</value>
+ 		</key>
+ 		<list>
+ 		<!--检验是否空行字段code -->
+ 		<value>rowno</value>
+ 		</list>
+ 		</entry>
+ 		</map>
+ 	</property>
+	</bean>
+	<!-- 子孙之间对应模板关系配置 -->
+	<bean id="mainGrandRelationShip" class="nc.ui.pubapp.uif2app.components.grand.MainGrandRelationShip">
+		<!-- 列表的对应关系 -->
+		<property name="bodyTabTOGrandListComposite">
+			<map>
+				<!-- key为子表的tabcode -->
+				<entry key="pk_testlistcomp">
+					<!-- 孙表的BillListView -->
+					<ref bean="sunlistView1"></ref>
+				</entry>
+			</map>
+		</property>
+		<!-- 卡片的对应关系 -->
+		<property name="bodyTabTOGrandCardComposite">
+			<map>
+				<!-- key为子表的tabcode -->
+				<entry key="pk_testlistcomp">
+					<!--孙表的BillListView-->
+					<ref bean="sunbillForm1"></ref>
+				</entry>
+			</map>
+		</property>
+		<!-- 孙页签与VO的对应关系 -->
+		<property name="grandTabAndVOMap">
+			<map>
+				<!-- key为孙页签的tabcode -->
+				<entry key="pk_testlistentry">
+					<!-- value为孙页签对应的VO -->
+					<ref bean="TestlistentryEVO"></ref>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="TestlistentryEVO" class="nc.vo.qcco.qctestlist.TestlistentryEVO"></bean>
+	<bean id="expendShrinkGrandListAction" class="nc.ui.pubapp.uif2app.components.grand.action.ExpendShrinkGrandListAction">
+		<property name="mainGrandModel" ref="mainGrandModel"></property>
+	</bean>
+	<bean id="expendShrinkGrandCardAction" class="nc.ui.pubapp.uif2app.components.grand.action.ExpendShrinkGrandCardAction">
+		<property name="mainGrandModel" ref="mainGrandModel"></property>
+	</bean>
+
+	<!-- 主子孙列表界面-->
+	<bean id="MainGrandlistView" class="nc.ui.pubapp.uif2app.components.grand.ListGrandPanelComposite" init-method="initUI">
+		<!-- 主子孙的MODEL -->
+		<property name="model" ref="mainGrandModel"></property>
+		<!--主子孙的对应关系-->
+		<property name="maingrandrelationship" ref="mainGrandRelationShip"></property>
+		<!--主子孙协调关系-->
+		<property name="mediator" ref="mainGrandMediator"></property>
+		<!--主子面板-->
+		<property name="mainPanel" ref="billListView"></property>
+		<!--列表的伸缩按钮-->
+		<property name="expendShrinkGrandListAction" ref="expendShrinkGrandListAction"></property>
+		<!--孙表的提示信息，默认为"孙表信息"，可以不配-->
+		<property name="grandString" value="参数信息"></property>
+	</bean>
+
+	<!-- 主子孙卡片界面 -->
+	<bean id="MainGrandbillForm" class="nc.ui.pubapp.uif2app.components.grand.CardGrandPanelComposite" init-method="initUI">
+		<!--主子的面板-->
+		<property name="mainPanel" ref="billForm"></property>
+		<!--主子孙的MODEL-->
+		<property name="model" ref="mainGrandModel"></property>
+		<!--主子孙的对应关系-->
+		<property name="maingrandrelationship" ref="mainGrandRelationShip"></property>
+		<!--主子孙的空行过滤-->
+		<property name="mainGrandBlankFilter" ref="mainGrandBlankFilter"></property>
+		<!--主子孙协调关系-->
+		<property name="mediator" ref="mainGrandMediator"></property>
+		<!--封装主组织的面板
+		<property name="headpanelcombo" ref="headpanelcombo"></property>-->
+		<!--孙表的伸缩按钮-->
+		<property name="expendShrinkGrandCardAction" ref="expendShrinkGrandCardAction"></property>
+		<!--孙表的提示信息，默认为"孙表信息"，可以不配-->
+		<property name="grandString" value="孙表信息"></property>
+	</bean>
+
+	<!-- 维持主子孙中间关系调停者的处理 -->
+	<bean id="mainGrandMediator" class="nc.ui.pubapp.uif2app.components.grand.mediator.MainGrandMediator">
+		<!--主子的BillForm-->
+		<property name="mainBillForm" ref="billForm"></property>
+		<!--主子的BillListView-->
+		<property name="mainBillListView" ref="billListView"></property>
+		<!--主子孙的MODEL-->
+		<property name="mainGrandModel" ref="mainGrandModel"></property>
+		<!--主子孙的关系-->
+		<property name="mainGrandRelationShip" ref="mainGrandRelationShip"></property>
+	</bean>
+
+	<!-- 孙列表视图 -->
+	<bean id="sunlistView1" class="nc.ui.pubapp.uif2app.view.ShowUpableBillListView"
+	init-method="initUI">
+		<property name="model" ref="bmModel2"></property>
+		<property name="templateContainer" ref="templateContainer"></property>
+		<property name="nodekey" value="st"></property>
+	</bean>
+
+	<bean id="componentValueManager" class="nc.ui.uif2.editor.value.BillCardPanelMetaDataValueAdapter"></bean>
+	
+	<!-- 孙卡片视图 -->
+	<bean id="sunbillForm1" class="nc.ui.pubapp.uif2app.view.ShowUpableBillForm" init-method="initUI">
+		<property name="model" ref="bmModel2"></property>
+		<property name="componentValueManager" ref="componentValueManager"></property>
+		<property name="templateContainer" ref="templateContainer" />
+		<property name="nodekey" value="st"></property>
+		<property name="showOrgPanel" value="false" />
+		<!-- 是否自动增行 -->
+		<property name="autoAddLine" value="false" />
+		<!-- 表体行操作按钮注册，与表体右键菜单保持一致 -->
+		<property name="bodyLineActions">
+			<list>
+				<!-- 提供了一组默认实现 -->
+				<bean class="nc.ui.pubapp.uif2app.components.grand.action.GrandBodyAddLineAction" >
+					<property name="mainForm" ref="billForm" />
+				</bean>
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyInsertLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyDelLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyCopyLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyPasteLineAction" >
+					<property name="clearItems">
+						<list>
+							<value>pk_testlistentry</value>
+							<value>dr</value>
+						</list>
+					</property>
+				</bean>
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyPasteToTailAction">
+					<property name="clearItems">
+						<list>
+							<value>pk_testlistentry</value>
+							<value>dr</value>
+						</list>
+					</property>
+				</bean>
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyLineEditAction" />
+			</list>
+		</property>
+	</bean>
+
+
+	
+	<!-- 数据模型管理器，主要负责各种方式的模型初始化 -->
+	<bean id="bmModelModelDataManager" class="nc.ui.pubapp.uif2app.query2.model.ModelDataManager">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="service"><ref bean="bmModelModelService" /></property>
+	</bean>
+
+	
+	<!-- Mediator，模型之间监听关系部分 -->
+
+
+    <!-- 组织面板//newadd -->
+
+	<!-- 卡片界面的工具栏和返回按钮 -->
+
+
+
+	<!-- 模板容器，负责对模板的统一装载 -->
+	<bean id="templateContainer" class="nc.ui.pubapp.uif2app.view.TemplateContainer"  init-method="load">
+		<property name="context" ref="context"/>
+		<property name="nodeKeies">
+			<list>
+				<value>bt</value>
+				<value>st</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 查询模板加载bean -->
+	<bean id="queryTemplateContainer" class="nc.ui.uif2.editor.QueryTemplateContainer">
+		<property name="context" ref="context"></property>
+		<property name="nodeKey" value="qt"></property>
+	</bean>
+
+	<!-- 界面元素 ***********************************************************-->
+	<!--====== 视图元素：[查询区域控件实例对象] ==============-->
+	<bean id="viewa" class="nc.ui.pubapp.uif2app.tangramlayout.UEQueryAreaShell" init-method="initUI">
+		<property name="queryAreaCreator" ref="defaultQueryAction" />
+	</bean>
+
+	<!--====== 视图元素：[PUBAPP列表视图控件(ShowUpableBillListView)实例对象] ==============-->
+	<bean id="billListView" class="nc.ui.pubapp.uif2app.view.ShowUpableBillListView" init-method="initUI">
+		<property name="model"><ref bean="bmModel" /></property>
+		<property name="nodekey" value="bt" />
+		<property name="multiSelectionEnable" value="false" />
+		<property name="templateContainer" ref="templateContainer"/>
+		<!--  表自定义项处理 -->
+		<property name="userdefitemListPreparator">
+			<bean class="nc.ui.pubapp.uif2app.view.CompositeBillListDataPrepare">
+				<property name="billListDataPrepares">
+					<list>
+						<ref bean="userdefitemlistPreparator" />
+						<ref bean="marAsstPreparator" />
+					</list>
+				</property>
+			</bean>
+		</property> 
+	</bean> 
+	<!-- 列表自定义项处理 -->
+	<bean name="userdefitemlistPreparator" class="nc.ui.uif2.editor.UserdefitemContainerListPreparator">
+		<property name="container" ref="userdefitemContainer" />
+		<property name="params">
+			<list>
+				<bean class="nc.ui.uif2.editor.UserdefQueryParam">
+					<property name="mdfullname" value="qcco.testlist" />
+					<property name="pos" value="0" />
+					<property name="prefix" value="vdef" />
+				</bean>
+				<bean class="nc.ui.uif2.editor.UserdefQueryParam">
+					<property name="mdfullname" value="qcco.TestlistcompBVO" />
+					<property name="pos" value="1" />
+					<property name="prefix" value="vbdef" />
+					<property name="tabcode" value="TestlistcompBVO" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="billForm" class="nc.ui.pubapp.uif2app.view.ShowUpableBillForm" init-method="initUI">
+		<property name="model" ref="bmModel"></property>
+		<property name="templateContainer" ref="templateContainer" />
+		<property name="nodekey" value="bt"></property>
+		<property name="showOrgPanel" value="true" />
+		<!-- 是否自动增行 -->
+		<property name="autoAddLine" value="false" />
+		<!-- 表体行操作按钮注册，与表体右键菜单保持一致 -->
+		<property name="bodyLineActions">
+			<list>
+				<!-- 提供了一组默认实现 -->
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyAddLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyInsertLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyDelLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyCopyLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyPasteLineAction" >
+					<property name="clearItems">
+						<list>
+							<value>pk_testlistcomp</value>
+							<value>rowno</value>
+						</list>
+					</property>
+				</bean>
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyPasteToTailAction">
+					<property name="clearItems">
+						<list>
+							<value>pk_testlistcomp</value>
+							<value>rowno</value>
+						</list>
+					</property>
+				</bean>
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyLineEditAction" />
+			</list>
+		</property>
+		<!-- 卡片自定义项处理-->
+		<property name="userdefitemPreparator">
+			<bean class="nc.ui.pubapp.uif2app.view.CompositeBillDataPrepare">
+				<property name="billDataPrepares">
+					<list>
+						<ref bean="userdefitemPreparator" />
+						<ref bean="marAsstPreparator" />
+					</list>
+				</property>
+			</bean>
+		</property> 
+	</bean>
+	<!-- 卡片自定义项配置 -->
+	<bean name="userdefitemPreparator" class="nc.ui.uif2.editor.UserdefitemContainerPreparator">
+		<property name="container" ref="userdefitemContainer" />
+		<property name="params">
+			<list>
+				<bean class="nc.ui.uif2.editor.UserdefQueryParam">
+					<property name="mdfullname" value="qcco.testlist" />
+					<property name="pos" value="0" />
+					<property name="prefix" value="vdef" />
+				</bean>
+				<bean class="nc.ui.uif2.editor.UserdefQueryParam">
+					<property name="mdfullname" value="qcco.TestlistcompBVO" />
+					<property name="pos" value="1" />
+					<property name="prefix" value="vbdef" />
+					<property name="tabcode" value="TestlistcompBVO" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	<!-- 自由辅助属性的配置 -->
+	<bean id="marAsstPreparator" class="nc.ui.pubapp.uif2app.view.material.assistant.MarAsstPreparator">
+		<property name="model" ref="bmModel" />
+		<property name="container" ref="userdefitemContainer" />
+		<property name="prefix" value="vfree" />
+		<property name="materialField" value="pk_productserial" />
+	</bean>
+	<bean id="userdefitemContainer"
+	class="nc.ui.uif2.userdefitem.UserDefItemContainer">
+		<property name="context" ref="context" />
+		<property name="params">
+			<list>
+				<bean class="nc.ui.uif2.userdefitem.QueryParam">
+					<property name="mdfullname" value="qcco.testlist" />
+				</bean>
+				<bean class="nc.ui.uif2.userdefitem.QueryParam">
+					<property name="mdfullname" value="qcco.TestlistcompBVO" />
+				</bean>
+				<bean class="nc.ui.uif2.userdefitem.QueryParam">
+					<property name="rulecode" value="materialassistant" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	<!-- 快速查询区域 -->
+	<bean id="queryArea" class="nc.ui.pubapp.uif2app.tangramlayout.UEQueryAreaShell"
+	init-method="initUI">
+		<property name="queryAreaCreator" ref="queryAction" />
+	</bean>
+	<!-- 查询信息栏 -->
+	<bean id="queryInfo" class="nc.ui.uif2.tangramlayout.CardLayoutToolbarPanel">
+		<property name="model" ref="bmModel" />
+	</bean>
+	
+
+	<!--====== 视图元素：[卡片界面工具栏和返回按钮控件实例对象] ==============-->
+	<bean id="viewb" class="nc.ui.pubapp.uif2app.tangramlayout.UECardLayoutToolbarPanel" >
+		<property name="model"><ref bean="bmModel" /></property>
+		<property name="titleAction">
+			<bean id="returnAction" class="nc.ui.pubapp.uif2app.actions.UEReturnAction">
+				<property name="goComponent" ref="MainGrandlistView" />
+				<property name="saveAction" ref="saveAction" />
+				<property name="model" ref="bmModel" />
+			</bean>
+		</property>
+	</bean>
+
+	
+	
+	<!-- 界面布局总装 -->
+	<bean id="container" class="nc.ui.uif2.TangramContainer" init-method="initUI">
+		<property name="model" ref="bmModel" />
+		<property name="tangramLayoutRoot">
+			<bean class="nc.ui.uif2.tangramlayout.node.TBNode">
+				<property name="showMode" value="CardLayout" />
+				<property name="tabs">
+					<list>
+						<bean class="nc.ui.uif2.tangramlayout.node.HSNode">
+							<property name="left">
+								<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+									<property name="component" ref="queryArea" />
+								</bean>
+							</property>
+							<property name="right">
+								<bean class="nc.ui.uif2.tangramlayout.node.VSNode">
+									<property name="up">
+										<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+											<property name="component" ref="queryInfo" />
+										</bean>
+									</property>
+									<property name="down">
+										<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+											<property name="name">
+												<bean class="nc.ui.uif2.I18nFB">
+													<property name="resDir" value="common"></property>
+													<property name="resId" value="UC001-0000107"></property>
+													<property name="defaultValue" value="列表"></property>
+												</bean>
+											</property>
+											<property name="component" ref="MainGrandlistView" />
+										</bean>
+									</property>
+									<property name="dividerLocation" value="25f" />
+								</bean>
+							</property>
+							<property name="dividerLocation" value="210f" />
+						</bean>
+						<bean class="nc.ui.uif2.tangramlayout.node.VSNode">
+							<property name="up">
+								<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+									<property name="component" ref="viewb" />
+								</bean>
+							</property>
+							<property name="down">
+								<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+									<property name="name">
+										<bean class="nc.ui.uif2.I18nFB">
+											<property name="resDir" value="common"></property>
+											<property name="resId" value="UC001-0000106"></property>
+											<property name="defaultValue" value="卡片"></property>
+										</bean>
+									</property>
+									<property name="component" ref="MainGrandbillForm" />
+								</bean>
+							</property>
+							<property name="dividerLocation" value="30f" />
+						</bean>
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	<!-- 事件监听 -->
+	<bean id="childrenPicky" class="nc.ui.pubapp.uif2app.event.ChildrenPicky">
+		<property name="billform" ref="billForm" />
+		<property name="bodyVoClasses">
+			<list>
+				<value>nc.vo.qcco.qctestlist.TestlistcompBVO</value>
+			</list>
+		</property>
+	</bean>
+	<!-- Actions  -->
+	<bean id="toftpanelActionContributors" class="nc.ui.uif2.actions.ActionContributors">
+		<property name="contributors">
+			<list>
+				<ref bean="actionsOfList" />
+				<ref bean="actionsOfCard" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- 列表显示下的按钮 -->
+	<bean id="actionsOfList" class="nc.ui.uif2.actions.StandAloneToftPanelActionContainer">
+		<constructor-arg ref="billListView" />
+		<property name="model" ref="bmModel" />
+		<property name="actions">
+			<list>
+				<ref bean="addAction" />
+				<ref bean="editAction" />
+				<ref bean="deleteAction" />
+				<ref bean="copyAction" />
+				<ref bean="separatorAction" />
+				<ref bean="queryAction" />
+				<ref bean="refreshAction" />
+				<ref bean="separatorAction" />
+				<ref bean="printMenuAction" />
+				<!--<ref bean="separatorAction" />
+				<ref bean="commitScriptAction" />
+				<ref bean="unCommitScriptAction" />
+				<ref bean="approveScriptAction" />
+				<ref bean="uNApproveScriptAction" />
+				<ref bean="separatorAction" />
+				<ref bean="pFApproveStatusInfoAction" />  -->
+			</list>
+		</property>
+	</bean>
+
+	<!-- 卡片显示下的按钮 -->
+	<bean id="actionsOfCard" class="nc.ui.uif2.actions.StandAloneToftPanelActionContainer">
+		<constructor-arg ref="billForm" />
+		<property name="model" ref="bmModel" />
+		<!-- 此处配置的Action浏览态始终可见 -->
+		<property name="actions">
+			<list>
+				<ref bean="addAction" />
+				<ref bean="editAction" />
+				<ref bean="deleteAction" />
+				<ref bean="copyAction" />
+				<ref bean="separatorAction" />
+				<ref bean="queryAction" />
+				<ref bean="cardRefreshAction" />
+				<ref bean="separatorAction" />
+				<ref bean="printMenuAction" />
+				<!--<ref bean="separatorAction" />
+				<ref bean="commitScriptAction" />
+				<ref bean="unCommitScriptAction" />
+				<ref bean="approveScriptAction" />
+				<ref bean="uNApproveScriptAction" />
+				<ref bean="separatorAction" />
+				<ref bean="pFApproveStatusInfoAction" /> -->
+			</list>
+		</property>
+
+		<!-- 此处配置的Action编辑态始终可见 -->
+		<property name="editActions">
+			<list>
+				<ref bean="saveAction" />
+				<ref bean="cancelAction" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- 分隔按钮 -->
+	<bean id="separatorAction" class="nc.funcnode.ui.action.SeparatorAction" />
+	<!-- 显示列表的拦截器 -->
+	<bean id="showListInterceptor"
+	class="nc.ui.pubapp.uif2app.actions.interceptor.ShowUpComponentInterceptor">
+		<property name="showUpComponent" ref="MainGrandlistView" />
+	</bean>
+	<!-- 显示卡片的拦截器 -->
+	<bean id="showCardInterceptor"
+	class="nc.ui.pubapp.uif2app.actions.interceptor.ShowUpComponentInterceptor">
+		<property name="showUpComponent" ref="MainGrandbillForm" />
+	</bean>
+	<!-- 新增按钮 -->
+	<bean id="addAction" class="nc.ui.uif2.actions.AddAction">
+		<property name="model" ref="bmModel" />
+		<property name="interceptor" ref="showCardInterceptor" />
+	</bean>
+
+	<bean id="editAction" class="nc.ui.uif2.actions.EditAction">
+		<property name="model" ref="bmModel" />
+		<property name="interceptor" ref="showCardInterceptor" />
+	</bean>
+	<!-- 删除按钮 -->
+	<bean id="deleteAction" class="nc.ui.qcco.testlist.action.TestlistDeleteAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="billType" value="QC02" />
+		<property name="filledUpInFlow" value="true" />
+		<property name="actionName" value="DELETE" />
+		<property name="mainGrandModel" ref="mainGrandModel" />
+		<property name="singleBillService" ref="deleteProxy" />
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean>
+	<!--   保存按钮 
+	<bean id="saveAction" class="nc.ui.qcco.testlist.action.testlistSaveAction">
+		<property name="mainGrandModel" ref="mainGrandModel" />
+		<property name="editor" ref="MainGrandbillForm" />
+		<property name="service" ref="bmModelModelService" />
+		<property name="validationService" ref="validateService" />
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean> -->
+	<bean id="saveAction" class="nc.ui.qcco.testlist.action.TestlistSaveAction">
+		<property name="model" ref="bmModel" />
+		<property name="service" ref="bmModelModelService" />
+		<property name="editor" ref="billForm" />
+		<property name="mainGrandModel" ref="mainGrandModel" />
+		<property name="billFormEditor" ref="billForm" />
+		<property name="billForm" ref="MainGrandbillForm" />
+		<property name="validationService" ref="validateService" />
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean>
+	<!-- 保存组合校验 -->
+	<bean id="validateService" class="nc.ui.pubapp.uif2app.validation.CompositeValidation">
+		<property name="validators">
+			<list>
+				<bean class="nc.ui.pubapp.uif2app.validation.TemplateNotNullValidation">
+					<property name="billForm" ref="billForm" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	<bean id="cancelAction" class="nc.ui.pubapp.uif2app.actions.CancelAction">
+		<property name="model" ref="bmModel" />
+	</bean>
+	<!-- 复制 -->
+	<bean id="copyAction" class="nc.ui.pubapp.uif2app.actions.CopyAction">
+		<property name="model" ref="bmModel" />
+		<property name="interceptor" ref="showCardInterceptor" />
+		<property name="editor" ref="billForm" />
+	</bean>
+
+	<!--  查询按钮 
+	<bean id="queryAction" class="nc.ui.pubapp.uif2app.query2.action.DefaultQueryAction">
+		<property name="model" ref="bmModel" />
+		<property name="dataManager" ref="bmModelModelDataManager" />
+		<property name="qryCondDLGInitializer" ref="qryCondInitializer" />
+		<property name="showUpComponent" ref="MainGrandlistView" />
+		<property name="templateContainer" ref="queryTemplateContainer" />
+	</bean> -->
+	
+	<!-- 列表下刷新 -->
+	<bean id="refreshAction" class="nc.ui.pubapp.uif2app.query2.action.DefaultRefreshAction">
+		<property name="dataManager" ref="bmModelModelDataManager" />
+		<property name="model" ref="bmModel" />
+	</bean>
+
+	<!-- 卡片下刷新 -->
+	<bean id="cardRefreshAction" class="nc.ui.pubapp.uif2app.actions.RefreshSingleAction">
+		<property name="model" ref="bmModel" />
+	</bean>
+
+	<!-- 打印 -->
+	<bean id="printAction" class="nc.ui.pubapp.uif2app.actions.MetaDataBasedPrintAction">
+		<property name="preview" value="false" />
+		<property name="model" ref="bmModel" />
+		<property name="nodeKey" value="st" />
+	</bean>
+
+	<!-- 预览 -->
+	<bean id="previewAction" class="nc.ui.pubapp.uif2app.actions.MetaDataBasedPrintAction">
+		<property name="preview" value="true" />
+		<property name="model" ref="bmModel" />
+		<property name="nodeKey" value="st" />
+	</bean>
+
+	<!-- 输出 -->
+	<bean id="outputAction" class="nc.ui.pubapp.uif2app.actions.OutputAction">
+		<property name="model" ref="bmModel" />
+		<property name="parent" ref="billForm" />
+		<property name="nodeKey" value="st" />
+	</bean>
+
+	<!-- 打印按钮组 -->
+	<bean id="printMenuAction" class="nc.funcnode.ui.action.GroupAction">
+		<property name="code" value="printMenuAction" />
+		<property name="name">
+			<bean class="nc.ui.uif2.I18nFB">
+				<property name="resDir" value="common"></property>
+				<property name="resId" value="UC001-0000007"></property>
+				<property name="defaultValue" value="打印"></property>
+			</bean>
+		</property>
+		<property name="actions">
+			<list>
+				<ref bean="printAction" />
+				<ref bean="previewAction" />
+				<ref bean="outputAction" />
+			</list>
+		</property>
+	</bean>
+
+	
+
+	<!-- model与界面的表体排序同步组件 -->
+	<bean id="billBodySortMediator" class="nc.ui.pubapp.uif2app.model.BillBodySortMediator">
+		<constructor-arg ref="bmModel" />
+		<constructor-arg ref="billForm" />
+		<constructor-arg ref="billListView" />
+	</bean>
+	<!-- 打开节点监听 newadd-->
+	<bean id="InitDataListener" class="nc.ui.pubapp.uif2app.model.DefaultFuncNodeInitDataListener">
+		<property name="model" ref="bmModel"/>
+		<property name="context" ref="context"></property>
+		<property name="voClassName" value="nc.vo.qcco.qctestlist.AggTestlistHVO"/>
+		<!-- 打开节点节点后要显示的界面 -->
+		<property name="autoShowUpComponent" ref="billForm"/>
+	</bean>
+
+
+
+	<!-- ClosingListener 编辑态关闭节点时提示是否保存//newadd***************************************************-->
+	<!-- 节点关闭前校验 -->
+	<bean id="ClosingListener" class="nc.ui.pubapp.common.validateservice.ClosingCheck" >
+		<property name="model" ref="bmModel" />
+		<property name="saveAction" ref="saveAction" />
+	</bean>
+
+
+	<!-- 事件监听newadd -->
+	<bean id="bmModelEventMediator" class="nc.ui.pubapp.uif2app.model.AppEventHandlerMediator">
+		<property name="model" ref="bmModel" />
+		<property name="handlerGroup">
+			<list>
+				<!-- nc.ui.pubapp.uif2app.event.OrgChangedEvent -->
+				<bean class="nc.ui.pubapp.uif2app.event.EventHandlerGroup">
+					<property name="event" value="nc.ui.pubapp.uif2app.event.OrgChangedEvent" />
+					<property name="handler">
+						<bean class="nc.ui.qcco.qctestlist.ace.handler.AceOrgChangeHandler" >
+							<property name="billForm" ref="billForm" />
+						</bean>
+					</property>
+				</bean>
+				<!-- nc.ui.pubapp.uif2app.event.billform.AddEvent -->
+				<bean class="nc.ui.pubapp.uif2app.event.EventHandlerGroup">
+					<property name="event" value="nc.ui.pubapp.uif2app.event.billform.AddEvent" />
+					<property name="handler">
+						<bean class="nc.ui.qcco.qctestlist.ace.handler.AceAddHandler" />
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<!--懒加载信息配置*******************************************************-->
+	<!--懒加载，加载表体数据-->
+	<bean id="billLazilyLoader" class="nc.ui.pubapp.uif2app.lazilyload.DefaultBillLazilyLoader" />
+	<bean id="bmModelLasilyLodadMediator" class="nc.ui.pubapp.uif2app.lazilyload.LazilyLoadManager">
+		<property name="model" ref="bmModel" />
+		<property name="loader" ref="billLazilyLoader" />
+		<property name="lazilyLoadSupporter">
+			<list>
+				<bean class="nc.ui.pubapp.uif2app.lazilyload.CardPanelLazilyLoad">
+					<property name="billform" ref="billForm" />
+				</bean>
+				<bean class="nc.ui.pubapp.uif2app.lazilyload.ListPanelLazilyLoad">
+					<property name="listView" ref="billListView" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+
+	<!-- 行号自动处理 -->
+	<bean id="rowNoMediator" class="nc.ui.pubapp.uif2app.view.RowNoMediator">
+		<property name="model" ref="bmModel" />
+		<property name="editor" ref="billForm" />
+	</bean>
+	<!-- 双击列表行后显示卡片 -->
+	<bean id="mouseClickShowPanelMediator" class="nc.ui.pubapp.uif2app.view.MouseClickShowPanelMediator">
+		<property name="listView" ref="billListView" />
+		<property name="showUpComponent" ref="billForm" />
+		<property name="hyperLinkColumn" value="null" />
+	</bean>
+	<!-- 单据号 -->
+	<bean id="billCodeMediator" class="nc.ui.pubapp.bill.BillCodeMediator" init-method="initUI">
+		<property name="billForm" ref="billForm"></property>
+		<property name="billCodeKey" value="billno"></property>
+		<property name="billType" value="QC02"></property>
+	</bean>
+
+
+
+	<!-- Action部分 ***********************************************************-->
+	<!-- ======= 动作：[newActions] [新增] ===========
+	<bean id="addAction" class="nc.ui.pubapp.uif2app.actions.AddAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="interceptor">
+			<bean class="nc.ui.pubapp.uif2app.actions.interceptor.CompositeActionInterceptor">
+				<property name="interceptors">
+					<list>
+						<bean class="nc.ui.pubapp.uif2app.actions.interceptor.ShowUpComponentInterceptor">
+							<property name="showUpComponent" ref="billForm" />
+						</bean>
+						
+					</list>
+				</property>
+			</bean>
+		</property>
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean> -->
+
+	<!-- ======= 动作：[newActions] [修改] ===========
+	<bean id="editAction" class="nc.ui.pubapp.uif2app.actions.EditAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean> -->
+
+	<!--  ======= 动作：[newActions] [删除] ===========
+	<bean id="deleteScriptAction" class="nc.ui.pubapp.uif2app.actions.pflow.DeleteScriptAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="billType" value="QC02" />
+		<property name="filledUpInFlow" value="true" />
+		<property name="actionName" value="DELETE" />
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean> -->
+
+	<bean id="defaultQueryActionQueryTemplateContainer" class="nc.ui.uif2.editor.QueryTemplateContainer">
+		<property name="nodeKey" value="qt" />
+		<property name="context"><ref bean="context"/></property>
+	</bean>
+	<!--======= 动作：[newActions] [查询] ===========-->
+	<bean id="queryAction" class="nc.ui.pubapp.uif2app.query2.action.DefaultQueryAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="templateContainer"><ref bean="defaultQueryActionQueryTemplateContainer" /></property>
+		<property name="nodeKey" value="qt"></property>
+		<property name="dataManager"><ref bean="bmModelModelDataManager"/></property>
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean>
+
+	<!-- ======= 动作：[newActions] [复制] ===========
+	<bean id="copyAction" class="nc.ui.pubapp.uif2app.actions.CopyAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="editor"><ref bean="billForm"/></property>
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean>-->
+
+	<!--======= 动作：[newActions] [刷新] ===========-->
+	<bean id="defaultRefreshAction" class="nc.ui.pubapp.uif2app.query2.action.DefaultRefreshAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="dataManager"><ref bean="bmModelModelDataManager"/></property>
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean>
+
+	<!--======= 动作：[newActions] [提交] ===========-->
+	<bean id="commitScriptAction" class="nc.ui.pubapp.uif2app.actions.pflow.CommitScriptAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="editor"><ref bean="billForm"/></property>
+		<property name="billType" value="QC02" />
+		<property name="filledUpInFlow" value="true" />
+		<property name="actionName" value="SAVE" />
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean>
+
+	<!--======= 动作：[newActions] [收回] ===========-->
+	<bean id="unCommitScriptAction" class="nc.ui.pubapp.uif2app.actions.pflow.UnCommitScriptAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="editor"><ref bean="billForm"/></property>
+		<property name="billType" value="QC02" />
+		<property name="filledUpInFlow" value="true" />
+		<property name="actionName" value="UNSAVEBILL" />
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean>
+
+	<!--======= 动作：[newActions] [审批] ===========-->
+	<bean id="approveScriptAction" class="nc.ui.pubapp.uif2app.actions.pflow.ApproveScriptAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="editor"><ref bean="billForm"/></property>
+		<property name="billType" value="QC02" />
+		<property name="filledUpInFlow" value="true" />
+		<property name="actionName" value="APPROVE" />
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean>
+
+	<!--======= 动作：[newActions] [取消审批] ===========-->
+	<bean id="uNApproveScriptAction" class="nc.ui.pubapp.uif2app.actions.pflow.UNApproveScriptAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="editor"><ref bean="billForm"/></property>
+		<property name="billType" value="QC02" />
+		<property name="filledUpInFlow" value="true" />
+		<property name="actionName" value="UNAPPROVE" />
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean>
+
+	<!--======= 动作：[newActions] [联查单据] ===========-->
+	<bean id="linkQueryAction" class="nc.ui.pubapp.uif2app.actions.LinkQueryAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean>
+
+	<!--======= 动作：[newActions] [预览] ===========-->
+	<bean id="metaDataBasedPrintAction" class="nc.ui.pubapp.uif2app.actions.MetaDataBasedPrintAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="actioncode" value="Preview"></property>
+		<property name="actionname" value="预览"></property>
+		<property name="preview" value="true"></property>
+		<property name="nodeKey" value="st" />
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean>
+
+	<!--======= 动作：[newActions] [打印] ===========-->
+	<bean id="metaDataBasedPrintActiona" class="nc.ui.pubapp.uif2app.actions.MetaDataBasedPrintAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="actioncode" value="Print"></property>
+		<property name="actionname" value="打印"></property>
+		<property name="preview" value="false"></property>
+		<property name="nodeKey" value="st" />
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean>
+
+	<!--   ======= 动作：[newActions] [输出...] ===========
+	<bean id="outputAction" class="nc.ui.pubapp.uif2app.actions.OutputAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="editor"><ref bean="billForm"/></property>
+		<property name="nodeKey" value="st" />
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean> -->
+
+	<!--======= 动作：[newActions] [查看审批意见] ===========-->
+	<bean id="pFApproveStatusInfoAction" class="nc.ui.pubapp.uif2app.actions.pflow.PFApproveStatusInfoAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean>
+
+	<!--======= 动作：[newActions] [保存] ===========-->
+	<bean id="saveScriptAction" class="nc.ui.pubapp.uif2app.actions.pflow.SaveScriptAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="editor"><ref bean="billForm"/></property>
+		<property name="billType" value="QC02" />
+		<property name="filledUpInFlow" value="true" />
+		<property name="actionName" value="SAVEBASE" />
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean>
+
+	<!--  ======= 动作：[newActions] [取消] ===========
+	<bean id="cancelAction" class="nc.ui.pubapp.uif2app.actions.CancelAction">
+		<property name="model"><ref bean="bmModel"/></property>
+		<property name="editor"><ref bean="billForm"/></property>
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean> -->
+
+	<!-- 分隔按钮
+	<bean id="separatorAction" class="nc.funcnode.ui.action.SeparatorAction" />
+    -->
+	<bean id="exceptionHandler" class="nc.ui.uif2.DefaultExceptionHanler">
+		<constructor-arg><ref bean="container"/></constructor-arg>
+		<property name="context"><ref bean="context" /></property>
+	</bean> 
+	
+
+	<!-- 自动修正卡片界面的分数显示控件(换算率) -->
+	<bean id="fractionFixMediator" class="nc.ui.pubapp.uif2app.view.FractionFixMediator" init-method="initUI">
+		<constructor-arg ref="billForm"/>
+	</bean>
+	
+	
+	
+	<bean id="remoteCallCombinatorCaller" class="nc.ui.uif2.editor.UIF2RemoteCallCombinatorCaller">
+		<property name="remoteCallers">
+			<list>
+				<ref bean="queryTemplateContainer" />
+				<ref bean="templateContainer" />
+				<ref bean="userdefitemContainer" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 批量保存校验服务类 -->
+</beans>

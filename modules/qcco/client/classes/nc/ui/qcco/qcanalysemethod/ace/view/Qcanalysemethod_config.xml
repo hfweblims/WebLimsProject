@@ -187,7 +187,7 @@
 	<bean id="InitDataListener" class="nc.ui.pubapp.uif2app.model.DefaultFuncNodeInitDataListener">
 		<property name="model" ref="bmModel"/>
 		<property name="context" ref="context"></property>
-		<property name="voClassName" value="nc.vo.qcco.qcanalysemethod.AggAnalyseMethodHVO"/>
+		<property name="voClassName" value="nc.vo.qcco.analysemethod.AggAnalyseMethodHVO"/>
 	</bean>
 
 
@@ -349,7 +349,6 @@
 	<!--======= ¶¯×÷£º[newActions] [±£´æ] ===========-->
 	<bean id="saveAction" class="nc.ui.pubapp.uif2app.actions.DifferentVOSaveAction">
 		<property name="model"><ref bean="bmModel"/></property>
-		<property name="editor"><ref bean="billForm"/></property>
 		<property name="service"><ref bean="bmModelModelService"/></property>
 		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
 	</bean>
