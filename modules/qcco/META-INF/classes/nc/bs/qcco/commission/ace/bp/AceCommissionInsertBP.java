@@ -22,13 +22,13 @@ public class AceCommissionInsertBP {
 				CommissionPluginPoint.INSERT);
 		this.addBeforeRule(bp.getAroundProcesser());
 		this.addAfterRule(bp.getAroundProcesser());
-		for(AggCommissionHVO aggvo : bills){
+		/*for(AggCommissionHVO aggvo : bills){
 			SuperVO[] childrenVO = (SuperVO[]) aggvo.getAllChildrenVO();
 			for(SuperVO vo : childrenVO){
 				CommissionBVO bvo = (CommissionBVO)vo;
 				CommissionRVO[] rvos = (CommissionRVO[]) BeanHelper.getProperty(bvo, "pk_commission_r");
 			}
-		}
+		}*/
 		
 		return bp.insert(bills);
 

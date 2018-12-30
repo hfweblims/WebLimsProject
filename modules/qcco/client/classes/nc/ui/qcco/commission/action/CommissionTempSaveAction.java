@@ -1,41 +1,35 @@
 package nc.ui.qcco.commission.action;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import nc.bs.framework.common.NCLocator;
+import java.awt.event.ActionEvent;
+
 import nc.bs.uif2.BusinessExceptionAdapter;
 import nc.bs.uif2.IActionCode;
 import nc.bs.uif2.validation.IValidationService;
 import nc.bs.uif2.validation.ValidationException;
-import nc.itf.qcco.ICommissionSaveService;
+import nc.desktop.ui.WorkbenchEnvironment;
+import nc.ui.cmp.base.view.CmpBaseEditor;
+import nc.ui.pub.bill.BillItem;
+import nc.ui.pubapp.bill.BillCardPanel;
 import nc.ui.pubapp.uif2app.actions.DifferentVOSaveAction;
-import nc.ui.pubapp.uif2app.actions.IDataOperationService;
 import nc.ui.pubapp.uif2app.components.grand.CardGrandPanelComposite;
 import nc.ui.pubapp.uif2app.components.grand.model.MainGrandModel;
+import nc.ui.pubapp.uif2app.model.BillManageModel;
 import nc.ui.pubapp.uif2app.view.ShowUpableBillForm;
+import nc.ui.tmpub.busidate.TMBusiDateManager;
 import nc.ui.uif2.IShowMsgConstant;
 import nc.ui.uif2.NCAction;
 import nc.ui.uif2.ShowStatusBarMsgUtil;
+import nc.vo.ml.NCLangRes4VoTransl;
 import nc.ui.uif2.UIState;
 import nc.ui.uif2.actions.ActionInitializer;
 import nc.util.mmpub.dpub.gc.GCClientBillCombinServer;
 import nc.util.mmpub.dpub.gc.GCClientBillToServer;
 import nc.util.mmpub.dpub.gc.GCPseudoColUtil;
-import nc.vo.pub.BeanHelper;
 import nc.vo.pub.BusinessException;
-import nc.vo.pub.CircularlyAccessibleValueObject;
-import nc.vo.pub.SuperVO;
 import nc.vo.pubapp.pattern.model.entity.bill.IBill;
-import nc.vo.pubapp.pattern.model.transfer.bill.ClientBillCombinServer;
-import nc.vo.pubapp.pattern.model.transfer.bill.ClientBillToServer;
 import nc.vo.qcco.commission.AggCommissionHVO;
-import nc.vo.qcco.commission.CommissionBVO;
-import nc.vo.qcco.commission.CommissionRVO;
-
-public class CommissionSaveAction extends DifferentVOSaveAction {
+import nc.vo.cmp.cash.BillStatusEnum;
+public class CommissionTempSaveAction extends DifferentVOSaveAction{
 
 	/**
 	 * SaveAction DifferentVOSaveAction
@@ -65,16 +59,18 @@ public class CommissionSaveAction extends DifferentVOSaveAction {
 
 	
 
-	IValidationService validationService;
 
-	public CommissionSaveAction() {
-		super();
-		ActionInitializer.initializeAction(this, IActionCode.SAVE);
+	public CommissionTempSaveAction() {
+		setBtnName(NCLangRes4VoTransl.getNCLangRes().getStrByID("3607cash_0", "03607cash-0020"));
+	    setCode("TEMPSAVE");
+
+	    putValue("ShortDescription", NCLangRes4VoTransl.getNCLangRes().getStrByID("3607cash_0", "03607cash-0020"));
 	}
 
 	// 注意将孙面板XXX属性设置
 	@Override
 	public void doAction(ActionEvent e) throws Exception {
+		
 		this.billFormEditor.getBillCardPanel().stopEditing();
 		AggCommissionHVO agghvo = (AggCommissionHVO)this.getBillForm().getValue();
 		if(null == agghvo){
@@ -162,20 +158,6 @@ public class CommissionSaveAction extends DifferentVOSaveAction {
 //		}
 	}
 
-	/**
-	 * 此方法在调用模型的add或update调用。用来对从编辑器中取出的value对象进行校验。
-	 * @param value
-	 */
-	protected void validate(Object value) { 
-		if(validationService!=null)
-		{
-			try {
-				validationService.validate(value);
-			} catch (ValidationException e) {
-				throw new BusinessExceptionAdapter(e);
-			}
-		}
-	}
 	
 
 	public MainGrandModel getMainGrandModel() {
@@ -188,11 +170,4 @@ public class CommissionSaveAction extends DifferentVOSaveAction {
 
 
 
-	public IValidationService getValidationService() {
-		return validationService;
-	}
-
-	public void setValidationService(IValidationService validationService) {
-		this.validationService = validationService;
-	}
 }

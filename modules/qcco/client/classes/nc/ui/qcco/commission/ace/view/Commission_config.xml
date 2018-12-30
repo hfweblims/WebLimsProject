@@ -499,6 +499,8 @@
 				<ref bean="approveScriptAction" />
 				<ref bean="uNApproveScriptAction" />
 				<ref bean="separatorAction" />
+				<ref bean="linkQueryAction" />
+				<ref bean="separatorAction" />
 				<ref bean="pFApproveStatusInfoAction" />
 			</list>
 		</property>
@@ -526,6 +528,8 @@
 				<ref bean="approveScriptAction" />
 				<ref bean="uNApproveScriptAction" />
 				<ref bean="separatorAction" />
+				<ref bean="linkQueryAction" />
+				<ref bean="separatorAction" />
 				<ref bean="pFApproveStatusInfoAction" />
 			</list>
 		</property>
@@ -534,6 +538,7 @@
 		<property name="editActions">
 			<list>
 				<ref bean="saveAction" />
+				<ref bean="tempSaveAction" />
 				<ref bean="cancelAction" />
 			</list>
 		</property>
@@ -603,8 +608,10 @@
 		<property name="model" ref="bmModel" />
 	</bean>
 	<!-- ¸´ÖÆ -->
-	<bean id="copyAction" class="nc.ui.pubapp.uif2app.actions.CopyAction">
+	<bean id="copyAction" class="nc.ui.qcco.commission.action.CommissionCopyAction">
 		<property name="model" ref="bmModel" />
+		<property name="billForm" ref="MainGrandbillForm" />
+		<property name="billFormEditor" ref="billForm" />
 		<property name="interceptor" ref="showCardInterceptor" />
 		<property name="editor" ref="billForm" />
 	</bean>
@@ -908,6 +915,16 @@
 		<property name="billType" value="QC07" />
 		<property name="filledUpInFlow" value="true" />
 		<property name="actionName" value="SAVEBASE" />
+		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
+	</bean>
+	<!--======= ¶¯×÷£º[newActions] [ÔÝ´æ] ===========-->
+	<bean id="tempSaveAction" class="nc.ui.qcco.commission.action.CommissionTempSaveAction">
+		<property name="model" ref="bmModel" />
+		<property name="service" ref="bmModelModelService" />
+		<property name="editor" ref="billForm" />
+		<property name="mainGrandModel" ref="mainGrandModel" />
+		<property name="billFormEditor" ref="billForm" />
+		<property name="billForm" ref="MainGrandbillForm" />
 		<property name="exceptionHandler"><ref bean="exceptionHandler" /></property>
 	</bean>
 
